@@ -1,2 +1,29 @@
-# sidemodsrerforged
-SideMods for Reforged
+# Pixelmon Level Cap Mod
+
+This Forge mod adds server-side level caps for Pixelmon Reforged. It enforces configurable caps that increase as trainers earn gym badges. Pokemon above the cap faint automatically when sent into battle, helping keep progression balanced on multiplayer servers.
+
+## Features
+
+* Configurable default level cap and gym-specific caps stored in `config/pixelmon-level-caps.json`.
+* Caps increase whenever a player earns a configured gym badge and persist per-player.
+* When a Pokemon above the cap is sent out in a battle, it immediately faints.
+* `/lvlcap` command lets players view their current cap and the next configured upgrade.
+* Admin subcommands (`/lvlcap set`, `/lvlcap remove`, `/lvlcap list`) manage gym caps by gym or gym leader name.
+
+## Commands
+
+| Command | Description |
+| --- | --- |
+| `/lvlcap` | Shows the caller's current cap and the next configured milestone. |
+| `/lvlcap set <gym> <level>` | (Permission level 2+) Sets the cap for the given gym/leader name. |
+| `/lvlcap remove <gym>` | (Permission level 2+) Removes the configured cap for the given gym. |
+| `/lvlcap list` | (Permission level 2+) Lists all configured gym caps. |
+
+Players automatically receive chat updates whenever their cap changes or when a high-level Pokemon is forced to faint.
+
+## Configuration
+
+* `config/pixelmon-level-caps.json` – JSON file storing default cap and per-gym caps.
+* `serverconfig/lvlcap-server.toml` – Forge config controlling the default cap before any badges.
+
+Caps update immediately when gym data changes or when admins edit the config files.
