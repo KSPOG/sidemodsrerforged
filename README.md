@@ -21,6 +21,25 @@ This Forge mod adds server-side level caps for Pixelmon Reforged. It enforces co
 
 Players automatically receive chat updates whenever their cap changes or when a high-level Pokemon is forced to faint.
 
+## Building
+
+This project uses ForgeGradle for Minecraft 1.16.5 and therefore must be
+compiled with Java 8.
+
+1. Install a Java 8 JDK (for example, Temurin/Adoptium 8) and make sure it is
+   the active JVM on your shell (`java -version` should report 1.8).
+2. Clone this repository and open a terminal in the project directory.
+3. Install Gradle 7.6.3 (the latest release supported by ForgeGradle 5). Newer
+   Gradle versions such as 8.x will fail to apply ForgeGradle.
+4. From the project directory, run `gradle build` to compile the mod.
+   The compiled jar will be written to `build/libs/pixelmon-level-cap-0.1.0.jar`.
+   If you prefer to recreate the Gradle wrapper locally, run
+   `gradle wrapper --gradle-version 7.6.3` (the generated wrapper files are not
+   committed here so the repository stays binary-free).
+
+Copy that jar into the `mods/` folder on your Forge server or client alongside
+Pixelmon Reforged to enable the level-cap behaviour.
+
 ## Configuration
 
 * `config/pixelmon-level-caps.json` – JSON file storing default cap and per-gym caps.
