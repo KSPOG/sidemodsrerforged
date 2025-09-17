@@ -23,6 +23,21 @@ public class PixelmonEventHandler {
     }
 
     @SubscribeEvent
+    public void onPlayerClone(PlayerEvent.Clone event) {
+        if (!(event.getPlayer() instanceof ServerPlayerEntity)) {
+            return;
+        }
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        if (player.level.isClientSide) {
+            return;
+        }
+        if (event.getOriginal() instanceof ServerPlayerEntity) {
+            LevelCapManager.cloneBadges(player, (ServerPlayerEntity) event.getOriginal());
+        }
+        LevelCapManager.broadcastLevelCap(player);
+    }
+
+    @SubscribeEvent
     public void onPixelmonEvents(Event event) {
         String packageName = event.getClass().getName();
         if (!packageName.startsWith("com.pixelmonmod")) {
