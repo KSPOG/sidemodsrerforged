@@ -13,6 +13,7 @@ This Forge mod adds server-side level caps for Pixelmon Reforged. It enforces co
 * `/lvlcap increase <player> <level>` raises a trainer's cap to at least the supplied value without editing gym configs.
 * Admins can instantly spawn and bind a gym NPC with `/lvlcap spawn <name> <level> [reward items]`, optionally granting items for victories.
 * Admins can create new gyms with `/create gym <name> <level>` and bind them to Pixelmon NPCs by right-clicking the intended leader.
+
 * Admins can instantly spawn and bind a gym NPC with `/lvlcap spawn <name> <level> [reward items]`, optionally granting items for victories.
 * Admins can create new gyms with `/create gym <name> <level>` and bind them to Pixelmon NPCs by right-clicking the intended leader.
 * Admin subcommands (`/lvlcap set`, `/lvlcap remove`, `/lvlcap list`) manage gym caps by gym or gym leader name.
@@ -60,6 +61,7 @@ When using `/lvlcap spawn`, append space-separated item identifiers to award the
 This spawns the gym with a level cap of 50 and delivers five Rare Candies plus a Nether Star the first time a player defeats the gym. Rewards are saved to `pixelmon-level-caps.json` alongside the gym definition.
 
 
+
 | `/lvlcap set <gym> <level>` | (Permission level 2+) Sets the cap for the given gym/leader name. |
 | `/lvlcap remove <gym>` | (Permission level 2+) Removes the configured cap for the given gym. |
 | `/lvlcap list` | (Permission level 2+) Lists all configured gym caps. |
@@ -87,6 +89,7 @@ compiled with Java 8.
    (The deobfuscated development jar still lives at
    `build/libs/pixelmon-level-cap-0.1.0.jar`.)
 
+
 4. The compiled jar will be written to `build/libs/pixelmon-level-cap-0.1.0.jar`.
 3. Install Gradle 7.6.3 (the latest release supported by ForgeGradle 5). Newer
    Gradle versions such as 8.x will fail to apply ForgeGradle.
@@ -95,7 +98,6 @@ compiled with Java 8.
    If you prefer to recreate the Gradle wrapper locally, run
    `gradle wrapper --gradle-version 7.6.3` (the generated wrapper files are not
    committed here so the repository stays binary-free).
-
 
 Copy that jar into the `mods/` folder on your Forge server or client alongside
 Pixelmon Reforged to enable the level-cap behaviour.

@@ -70,6 +70,13 @@ public final class LevelCapManager {
         Set<String> badges = getStoredBadges(player);
         int computedCap = computeLevelCap(badges);
         OptionalInt manual = getManualLevelCap(player);
+        if (manual.isPresent()) {
+            int manualCap = manual.getAsInt();
+            if (manualCap > computedCap) {
+                return manualCap;
+            }
+        }
+        return computedCap;
         if (!manual.isPresent()) {
             return computedCap;
         }
