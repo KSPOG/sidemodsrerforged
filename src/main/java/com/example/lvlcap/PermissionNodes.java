@@ -13,6 +13,7 @@ public final class PermissionNodes {
     public static final String COMMAND_FAINT_SELF = "lvlcap.command.faint";
     public static final String COMMAND_FAINT_OTHERS = "lvlcap.command.faint.others";
     public static final String COMMAND_SET = "lvlcap.command.set";
+    public static final String COMMAND_INCREASE = "lvlcap.command.increase";
     public static final String COMMAND_REMOVE = "lvlcap.command.remove";
     public static final String COMMAND_LIST = "lvlcap.command.list";
     public static final String COMMAND_SPAWN = "lvlcap.command.spawn";
@@ -29,6 +30,8 @@ public final class PermissionNodes {
                 "Allows using /lvlcap faint on other players.");
         PermissionAPI.registerNode(COMMAND_SET, DefaultPermissionLevel.OP,
                 "Allows setting gym level caps with /lvlcap set.");
+        PermissionAPI.registerNode(COMMAND_INCREASE, DefaultPermissionLevel.OP,
+                "Allows increasing player level caps with /lvlcap increase.");
         PermissionAPI.registerNode(COMMAND_REMOVE, DefaultPermissionLevel.OP,
                 "Allows removing gym level caps with /lvlcap remove.");
         PermissionAPI.registerNode(COMMAND_LIST, DefaultPermissionLevel.OP,

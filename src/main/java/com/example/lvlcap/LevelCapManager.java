@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class LevelCapManager {
     private static final String PLAYER_DATA_TAG = LevelCapMod.MOD_ID;
     private static final String PLAYER_BADGES_TAG = "badges";
-
+    private static final String PLAYER_MANUAL_CAP_TAG = "manualCap";
     private static GymLevelCapConfig config;
     private static final Map<UUID, PendingGymCreation> pendingGymCreations = new ConcurrentHashMap<>();
 
@@ -68,6 +68,12 @@ public final class LevelCapManager {
 
     public static int getLevelCap(ServerPlayerEntity player) {
         Set<String> badges = getStoredBadges(player);
+        int cap = computeLevelCap(badges);
+        OptionalInt manual = getManualLevelCap(player);
+        if (manual.isPresent()) {
+            cap = Math.max(cap, manual.getAsInt());
+        }
+        return cap;
         return computeLevelCap(badges);
     }
 
@@ -126,6 +132,23 @@ public final class LevelCapManager {
             list.add(StringNBT.valueOf(badge));
         }
         modData.put(PLAYER_BADGES_TAG, list);
+        persistModData(player, modData);
+    }
+
+    public static OptionalInt getManualLevelCap(ServerPlayerEntity player) {
+        CompoundNBT modData = getOrCreateModData(player);
+        if (modData.contains(PLAYER_MANUAL_CAP_TAG, 3)) {
+            return OptionalInt.of(Math.max(1, modData.getInt(PLAYER_MANUAL_CAP_TAG)));
+        }
+        return OptionalInt.empty();
+    }
+
+    public static int setManualLevelCap(ServerPlayerEntity player, int levelCap) {
+        CompoundNBT modData = getOrCreateModData(player);
+        int stored = Math.max(1, levelCap);
+        modData.putInt(PLAYER_MANUAL_CAP_TAG, stored);
+        persistModData(player, modData);
+        return stored;
         CompoundNBT persistent = player.getPersistentData();
         CompoundNBT persisted = getOrCreatePersistedTag(persistent);
         persisted.put(PLAYER_DATA_TAG, modData);
@@ -134,6 +157,12 @@ public final class LevelCapManager {
 
     public static void cloneBadges(ServerPlayerEntity target, ServerPlayerEntity source) {
         saveBadges(target, getStoredBadges(source));
+        OptionalInt manual = getManualLevelCap(source);
+        if (manual.isPresent()) {
+            setManualLevelCap(target, manual.getAsInt());
+        } else {
+            clearManualLevelCap(target);
+        }
     }
 
     public static void syncBadgesFromPixelmon(ServerPlayerEntity player) {
@@ -448,6 +477,21 @@ public final class LevelCapManager {
         persisted.put(PLAYER_DATA_TAG, modData);
         persistent.put(PlayerEntity.PERSISTED_NBT_TAG, persisted);
         return modData;
+    }
+
+    private static void persistModData(ServerPlayerEntity player, CompoundNBT modData) {
+        CompoundNBT persistent = player.getPersistentData();
+        CompoundNBT persisted = getOrCreatePersistedTag(persistent);
+        persisted.put(PLAYER_DATA_TAG, modData);
+        persistent.put(PlayerEntity.PERSISTED_NBT_TAG, persisted);
+    }
+
+    public static void clearManualLevelCap(ServerPlayerEntity player) {
+        CompoundNBT modData = getOrCreateModData(player);
+        if (modData.contains(PLAYER_MANUAL_CAP_TAG)) {
+            modData.remove(PLAYER_MANUAL_CAP_TAG);
+            persistModData(player, modData);
+        }
     }
 
     private static CompoundNBT getOrCreatePersistedTag(CompoundNBT persistent) {

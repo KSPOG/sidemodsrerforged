@@ -40,6 +40,13 @@ public final class LevelCapCommands {
                                         .executes(ctx -> setLevelCap(ctx.getSource(),
                                                 StringArgumentType.getString(ctx, "gym"),
                                                 IntegerArgumentType.getInteger(ctx, "level"))))))
+                .then(Commands.literal("increase")
+                        .requires(source -> PermissionNodes.canUse(source, PermissionNodes.COMMAND_INCREASE, 2))
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("level", IntegerArgumentType.integer(1))
+                                        .executes(ctx -> increaseLevelCap(ctx.getSource(),
+                                                EntityArgument.getPlayer(ctx, "player"),
+                                                IntegerArgumentType.getInteger(ctx, "level"))))))
                 .then(Commands.literal("remove")
                         .requires(source -> PermissionNodes.canUse(source, PermissionNodes.COMMAND_REMOVE, 2))
                         .then(Commands.argument("gym", StringArgumentType.string())
@@ -85,6 +92,26 @@ public final class LevelCapCommands {
         source.sendSuccess(new StringTextComponent("Set level cap for " + gymName + " to " + stored + "."), true);
         LevelCapManager.handleAllOnlinePlayers(LevelCapManager::broadcastLevelCap);
         return stored;
+    }
+
+    private static int increaseLevelCap(CommandSource source, ServerPlayerEntity target, int requestedLevel) {
+        int current = LevelCapManager.getLevelCap(target);
+        int desired = Math.max(1, requestedLevel);
+        int newCap = Math.max(current, desired);
+        LevelCapManager.setManualLevelCap(target, newCap);
+        LevelCapManager.broadcastLevelCap(target);
+        if (newCap > current) {
+            source.sendSuccess(new StringTextComponent("Increased " + target.getName().getString()
+                    + "'s level cap to " + newCap + "."), true);
+            if (source.getEntity() != target) {
+                target.sendMessage(new StringTextComponent("Your Pixelmon level cap was increased to " + newCap + "."),
+                        target.getUUID());
+            }
+        } else {
+            source.sendSuccess(new StringTextComponent(target.getName().getString()
+                    + " already has a level cap of " + newCap + " or higher."), false);
+        }
+        return newCap;
     }
 
     private static int removeLevelCap(CommandSource source, String gymName) {

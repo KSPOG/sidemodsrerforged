@@ -10,6 +10,9 @@ This Forge mod adds server-side level caps for Pixelmon Reforged. It enforces co
 * `/lvlcap` command lets players view their current cap and the next configured upgrade.
 * `/lvlcap faint` lets players or admins immediately faint party Pokemon that exceed the current cap.
 * Admin subcommands (`/lvlcap set`, `/lvlcap remove`, `/lvlcap list`) manage gym caps by gym or gym leader name.
+* `/lvlcap increase <player> <level>` raises a trainer's cap to at least the supplied value without editing gym configs.
+* Admins can instantly spawn and bind a gym NPC with `/lvlcap spawn <name> <level> [reward items]`, optionally granting items for victories.
+* Admins can create new gyms with `/create gym <name> <level>` and bind them to Pixelmon NPCs by right-clicking the intended leader.
 * Admins can instantly spawn and bind a gym NPC with `/lvlcap spawn <name> <level> [reward items]`, optionally granting items for victories.
 * Admins can create new gyms with `/create gym <name> <level>` and bind them to Pixelmon NPCs by right-clicking the intended leader.
 * Admin subcommands (`/lvlcap set`, `/lvlcap remove`, `/lvlcap list`) manage gym caps by gym or gym leader name.
@@ -23,6 +26,7 @@ This Forge mod adds server-side level caps for Pixelmon Reforged. It enforces co
 | `/lvlcap faint [player]` | Faints the caller's over-cap Pixelmon. (Permission level 2+ to target another player.) |
 | `/lvlcap set <gym> <level>` | (Permission level 2+) Sets the cap for the given gym/leader name. |
 | `/lvlcap remove <gym>` | (Permission level 2+) Removes the configured cap for the given gym. |
+| `/lvlcap increase <player> <level>` | (Permission level 2+) Raises the target's cap to at least the requested level. |
 | `/lvlcap list` | (Permission level 2+) Lists all configured gym caps. |
 | `/lvlcap spawn <gym> <level> [rewards]` | (Permission level 2+) Spawns a Pixelmon NPC in front of you, binds it as a gym with the given cap, and optionally configures victory rewards. |
 | `/create gym <name> <level>` | (Permission level 2+) Starts gym creation; right-click a Pixelmon NPC to finalise the binding. |
@@ -40,6 +44,7 @@ The mod registers the following permission nodes via Forge's `PermissionAPI` so 
 | `lvlcap.command.faint.others` | OPs | Allows fainting other players' Pokémon with `/lvlcap faint <player>`. |
 | `lvlcap.command.set` | OPs | Allows setting gym caps with `/lvlcap set`. |
 | `lvlcap.command.remove` | OPs | Allows removing gym caps with `/lvlcap remove`. |
+| `lvlcap.command.increase` | OPs | Allows raising player caps with `/lvlcap increase`. |
 | `lvlcap.command.list` | OPs | Allows listing configured caps with `/lvlcap list`. |
 | `lvlcap.command.spawn` | OPs | Allows spawning and configuring gym NPCs with `/lvlcap spawn`. |
 | `lvlcap.command.create` | OPs | Allows creating gyms with `/create gym`. |
@@ -53,6 +58,7 @@ When using `/lvlcap spawn`, append space-separated item identifiers to award the
 ```
 
 This spawns the gym with a level cap of 50 and delivers five Rare Candies plus a Nether Star the first time a player defeats the gym. Rewards are saved to `pixelmon-level-caps.json` alongside the gym definition.
+
 
 | `/lvlcap set <gym> <level>` | (Permission level 2+) Sets the cap for the given gym/leader name. |
 | `/lvlcap remove <gym>` | (Permission level 2+) Removes the configured cap for the given gym. |
@@ -80,7 +86,6 @@ compiled with Java 8.
    `build/libs/pixelmon-level-cap-0.1.0-release.jar` after the build finishes.
    (The deobfuscated development jar still lives at
    `build/libs/pixelmon-level-cap-0.1.0.jar`.)
-
 4. The compiled jar will be written to `build/libs/pixelmon-level-cap-0.1.0.jar`.
 3. Install Gradle 7.6.3 (the latest release supported by ForgeGradle 5). Newer
    Gradle versions such as 8.x will fail to apply ForgeGradle.
