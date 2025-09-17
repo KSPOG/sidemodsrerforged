@@ -29,6 +29,14 @@ compiled with Java 8.
 1. Install a Java 8 JDK (for example, Temurin/Adoptium 8) and make sure it is
    the active JVM on your shell (`java -version` should report 1.8).
 2. Clone this repository and open a terminal in the project directory.
+3. Use the provided bootstrap scripts to run Gradle 7.6.3 (the newest release
+   supported by ForgeGradle 5) without installing it system-wide:
+   * Unix/macOS: `./gradlew build`
+   * Windows: `gradle.bat build`
+   The first run downloads Gradle into `.gradle-wrapper/` and all subsequent
+   invocations reuse that copy. If you prefer to install Gradle manually, make
+   sure you invoke version 7.6.3—ForgeGradle 5 will fail to apply on Gradle 8.x.
+4. The compiled jar will be written to `build/libs/pixelmon-level-cap-0.1.0.jar`.
 3. Install Gradle 7.6.3 (the latest release supported by ForgeGradle 5). Newer
    Gradle versions such as 8.x will fail to apply ForgeGradle.
 4. From the project directory, run `gradle build` to compile the mod.
@@ -36,6 +44,7 @@ compiled with Java 8.
    If you prefer to recreate the Gradle wrapper locally, run
    `gradle wrapper --gradle-version 7.6.3` (the generated wrapper files are not
    committed here so the repository stays binary-free).
+
 
 Copy that jar into the `mods/` folder on your Forge server or client alongside
 Pixelmon Reforged to enable the level-cap behaviour.
