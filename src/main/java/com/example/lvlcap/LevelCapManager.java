@@ -1,5 +1,6 @@
 package com.example.lvlcap;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -92,14 +93,7 @@ public final class LevelCapManager {
     }
 
     public static Set<String> getStoredBadges(ServerPlayerEntity player) {
-        CompoundNBT persistent = player.getPersistentData();
-        CompoundNBT modData;
-        if (persistent.contains(PLAYER_DATA_TAG, 10)) {
-            modData = persistent.getCompound(PLAYER_DATA_TAG);
-        } else {
-            modData = new CompoundNBT();
-            persistent.put(PLAYER_DATA_TAG, modData);
-        }
+        CompoundNBT modData = getOrCreateModData(player);
         ListNBT list = modData.getList(PLAYER_BADGES_TAG, 8);
         Set<String> result = new LinkedHashSet<>();
         for (int i = 0; i < list.size(); i++) {
@@ -109,19 +103,20 @@ public final class LevelCapManager {
     }
 
     public static void saveBadges(ServerPlayerEntity player, Collection<String> badges) {
-        CompoundNBT persistent = player.getPersistentData();
-        CompoundNBT modData;
-        if (persistent.contains(PLAYER_DATA_TAG, 10)) {
-            modData = persistent.getCompound(PLAYER_DATA_TAG);
-        } else {
-            modData = new CompoundNBT();
-        }
+        CompoundNBT modData = getOrCreateModData(player);
         ListNBT list = new ListNBT();
         for (String badge : badges) {
             list.add(StringNBT.valueOf(badge));
         }
         modData.put(PLAYER_BADGES_TAG, list);
-        persistent.put(PLAYER_DATA_TAG, modData);
+        CompoundNBT persistent = player.getPersistentData();
+        CompoundNBT persisted = getOrCreatePersistedTag(persistent);
+        persisted.put(PLAYER_DATA_TAG, modData);
+        persistent.put(PlayerEntity.PERSISTED_NBT_TAG, persisted);
+    }
+
+    public static void cloneBadges(ServerPlayerEntity target, ServerPlayerEntity source) {
+        saveBadges(target, getStoredBadges(source));
     }
 
     public static void syncBadgesFromPixelmon(ServerPlayerEntity player) {
@@ -147,5 +142,26 @@ public final class LevelCapManager {
                 consumer.accept(player);
             }
         }
+    }
+
+    private static CompoundNBT getOrCreateModData(ServerPlayerEntity player) {
+        CompoundNBT persistent = player.getPersistentData();
+        CompoundNBT persisted = getOrCreatePersistedTag(persistent);
+        if (persisted.contains(PLAYER_DATA_TAG, 10)) {
+            return persisted.getCompound(PLAYER_DATA_TAG);
+        }
+        CompoundNBT modData = new CompoundNBT();
+        persisted.put(PLAYER_DATA_TAG, modData);
+        persistent.put(PlayerEntity.PERSISTED_NBT_TAG, persisted);
+        return modData;
+    }
+
+    private static CompoundNBT getOrCreatePersistedTag(CompoundNBT persistent) {
+        if (persistent.contains(PlayerEntity.PERSISTED_NBT_TAG, 10)) {
+            return persistent.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+        }
+        CompoundNBT persisted = new CompoundNBT();
+        persistent.put(PlayerEntity.PERSISTED_NBT_TAG, persisted);
+        return persisted;
     }
 }
