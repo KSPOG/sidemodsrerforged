@@ -99,4 +99,3 @@ tasks.named('reobfJar').configure { reobf ->
         project.logger.lifecycle("Release jar available at ${new File(libsDir, renamed)}")
     }
 }
-
