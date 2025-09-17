@@ -1,0 +1,10 @@
+/.gradle/
+/.gradle-wrapper/
+/build/
+/out/
+/bin/
+/run/
+gradle/
+*.iml
+.idea/
+.DS_Store
