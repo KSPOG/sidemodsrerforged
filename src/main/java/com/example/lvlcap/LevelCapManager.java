@@ -34,7 +34,6 @@ public final class LevelCapManager {
     private static final String PLAYER_DATA_TAG = LevelCapMod.MOD_ID;
     private static final String PLAYER_BADGES_TAG = "badges";
     private static final String PLAYER_MANUAL_CAP_TAG = "manualCap";
-
     private static GymLevelCapConfig config;
     private static final Map<UUID, PendingGymCreation> pendingGymCreations = new ConcurrentHashMap<>();
 
@@ -75,6 +74,7 @@ public final class LevelCapManager {
             cap = Math.max(cap, manual.getAsInt());
         }
         return cap;
+        return computeLevelCap(badges);
     }
 
     public static int computeLevelCap(Collection<String> normalizedBadges) {
@@ -149,6 +149,10 @@ public final class LevelCapManager {
         modData.putInt(PLAYER_MANUAL_CAP_TAG, stored);
         persistModData(player, modData);
         return stored;
+        CompoundNBT persistent = player.getPersistentData();
+        CompoundNBT persisted = getOrCreatePersistedTag(persistent);
+        persisted.put(PLAYER_DATA_TAG, modData);
+        persistent.put(PlayerEntity.PERSISTED_NBT_TAG, persisted);
     }
 
     public static void cloneBadges(ServerPlayerEntity target, ServerPlayerEntity source) {
