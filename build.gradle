@@ -78,3 +78,24 @@ jar {
 
 jar.finalizedBy('reobfJar')
 
+def jarTask = tasks.named('jar', org.gradle.api.tasks.bundling.Jar)
+def releaseJarName = jarTask.flatMap { jar ->
+    jar.archiveFileName.map { name -> name.replaceFirst(/\.jar$/, '-release.jar') }
+}
+
+tasks.named('reobfJar').configure { reobf ->
+    doLast {
+        if (reobf.outputs.files.isEmpty()) {
+            return
+        }
+        def libsDir = layout.buildDirectory.dir('libs').get().asFile
+        def originalName = jarTask.get().archiveFileName.get()
+        def renamed = releaseJarName.get()
+        project.copy {
+            from reobf.outputs.files
+            into libsDir
+            rename { fileName -> fileName == originalName ? renamed : fileName }
+        }
+        project.logger.lifecycle("Release jar available at ${new File(libsDir, renamed)}")
+    }
+}

@@ -36,6 +36,10 @@ compiled with Java 8.
    The first run downloads Gradle into `.gradle-wrapper/` and all subsequent
    invocations reuse that copy. If you prefer to install Gradle manually, make
    sure you invoke version 7.6.3—ForgeGradle 5 will fail to apply on Gradle 8.x.
+4. The reobfuscated release jar will be copied to
+   `build/libs/pixelmon-level-cap-0.1.0-release.jar` after the build finishes.
+   (The deobfuscated development jar still lives at
+   `build/libs/pixelmon-level-cap-0.1.0.jar`.)
 4. The compiled jar will be written to `build/libs/pixelmon-level-cap-0.1.0.jar`.
 3. Install Gradle 7.6.3 (the latest release supported by ForgeGradle 5). Newer
    Gradle versions such as 8.x will fail to apply ForgeGradle.

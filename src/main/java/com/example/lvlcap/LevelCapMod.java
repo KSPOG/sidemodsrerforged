@@ -43,9 +43,14 @@ public class LevelCapMod {
     private void onCommonSetup(final FMLCommonSetupEvent event) {
         LevelCapMod.LOGGER.info("Pixelmon Level Cap mod initialising");
     }
+
+
+    private void onConfigLoading(final ModConfig.Loading event) {
+
     private void onConfigLoading(final ModConfig.Loading event) {
 
     private void onConfigLoading(final net.minecraftforge.fml.event.config.ModConfigEvent.Loading event) {
+
 
         if (event.getConfig().getSpec() == ModConfigHolder.SPEC) {
             LevelCapManager.reload();
@@ -53,6 +58,7 @@ public class LevelCapMod {
     }
 
     private void onConfigReloading(final ModConfig.Reloading event) {
+
 
     private void onConfigReloading(final net.minecraftforge.fml.event.config.ModConfigEvent.Reloading event) {
 
